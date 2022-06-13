@@ -1,0 +1,69 @@
+{
+    "version": "2.0",
+    "envId": "{{env.ENV_ID}}",
+    "framework": {
+        "name": "zentao",
+        "plugins": {
+            "client": {
+                "use": "@cloudbase/framework-plugin-container",
+                "inputs": {
+                    "serviceName": "zentao",
+                    "cpu": 0.5,
+                    "mem": 1,
+                    "servicePath": "/",
+                    "localPath": "./",
+                    "uploadType": "image",
+                    "imageInfo": {
+                        "imageUrl": "idoop/zentao:latest"
+                    },
+                    "containerPort": 80,
+                    "envVariables": {
+                        "ADMINER_USER": "{{env.administratorName}}",
+                        "ADMINER_PASSWD": "{{env.administratorPassword}}",
+                        "BIND_ADDRESS": "false"
+                    },
+                    "volumeMounts": {
+                        "/opt/zbox/": "zentao-cfs"
+                    }
+                }
+            }
+        },
+        "requirement": {
+            "environment": {
+                "administratorName": {
+                    "description": "管理员账号，字母和数字的组合，不能为纯数字，长度范围是 1 ~ 32",
+                    "required": true,
+                    "validation": {
+                        "rule": {
+                            "type": "RegExp",
+                            "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9_-]?[a-zA-Z0-9]+$",
+                            "flag": "g"
+                        },
+                        "errorMessage": "账号不符合规范"
+                    }
+                },
+                "administratorPassword": {
+                    "description": "管理员密码，长度必需大于 8 位，不能由纯数字或纯字母组成",
+                    "required": true,
+                    "validation": {
+                        "rule": {
+                            "type": "RegExp",
+                            "pattern": "[^a-zA-Z]",
+                            "flag": ""
+                        },
+                        "errorMessage": "密码不符合规范"
+                    }
+                }
+            },
+            "addons": [
+                {
+                    "type": "CFS",
+                    "name": "zentao-cfs"
+                }
+            ]
+        }
+    },
+    "functionRoot": "./functions",
+    "functions": [],
+    "region": "ap-shanghai"
+}
